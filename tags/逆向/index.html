@@ -10,7 +10,7 @@
     
     
     
-    <title>起航（ApkTool 使用） | 成都小白</title>
+    <title>Tags: 逆向 | 成都小白</title>
     <!-- inject:style -->
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <!-- endinject -->
@@ -145,52 +145,37 @@
     
     <div class="cube-content">
         <div class="cube-left">
-            <div class="cube-article">
-    <h1 class="title">起航（ApkTool 使用）</h1>
+            <style>
+    @media(max-width: 768px) {
+        body {
+            background-color: #fff!important;
+        }
+    }
+</style>
+<div class="cube-archives">
     
-    <div class="cube-article-header">
-        <div class="cube-article-date">
-            <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
-            <!-- moment.js对象 -->
-            2019-06-10
-        </div>
-        <div class="cube-article-tags">
-    <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
-    
-    <a href="/tags/逆向/">#逆向</a>
-    
-</div>
+    <div class="cube-archive" style="margin-top: 0;">
+        <h1 class="title">逆向</h1>
+        
+        <ul class="posts">
+            
+            <li class="post">
+                <a href="/2019/06/10/Android-Studio-Smaliidea无源码调试APK/">Android Studio+Smaliidea无源码调试APK</a>
+            </li>
+            
+            <li class="post">
+                <a href="/2019/06/10/正式入坑之Smali从入门到放弃/">正式入坑之Smali从入门到放弃</a>
+            </li>
+            
+            <li class="post">
+                <a href="/2019/06/10/起航（ApkTool-使用）/">起航（ApkTool 使用）</a>
+            </li>
+            
+        </ul>
+        
     </div>
     
-    <div class="cube-article-content cube-markdown">
-        
-        <p><img src="https://s2.ax1x.com/2019/06/10/Vy8Mvt.gif" alt="Dragonwell Logo"></p>
-<h2 id="工欲善其事，必先利其器"><a href="#工欲善其事，必先利其器" class="headerlink" title="工欲善其事，必先利其器"></a>工欲善其事，必先利其器</h2><h3 id="1-下载ApkTool"><a href="#1-下载ApkTool" class="headerlink" title="1.下载ApkTool"></a>1.下载ApkTool</h3><p>官方下载地址：<a href="https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.4.0.jar" target="_blank" rel="noopener">https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.4.0.jar</a></p>
-<h3 id="2-反编译第一个APK"><a href="#2-反编译第一个APK" class="headerlink" title="2.反编译第一个APK"></a>2.反编译第一个APK</h3><p>反编译APK java -jar apktool.jar d target.apk<br><img src="https://s2.ax1x.com/2019/06/10/Vyc78I.png" alt="Image 2"><br>    执行完毕之后得到如下目录<br>    <strong>assests</strong>对应开发时的assests目录<br>    <strong>lib</strong>经过编译后只存放so文件<br>    <strong>original</strong>存放签名文件<br>    <strong>res</strong> XML资源文件<br>    <strong>smali</strong> 反编译字节码文件目录<br><img src="https://s2.ax1x.com/2019/06/10/VyguGR.png" alt="Image 3"></p>
-<h3 id="3-回编译APK"><a href="#3-回编译APK" class="headerlink" title="3.回编译APK"></a>3.回编译APK</h3><p>有些需求是在魔改之后生成一个新的APK，由于修改的是字节码文件 所以需要二次打包APK<br>这里使用apktool 二次打包java -jar apktool.jar b target<br><img src="https://s2.ax1x.com/2019/06/10/VyRY8A.png" alt="Image 4"><br>这个时候还是未签名的APK 要正常使用需要使用sign.jar重新签名，二次打包之后签名会改变，有些APK可能会需要做过签名验证才行。</p>
-
-    </div>
 </div>
-
-<div class="cube-article-nav">
-    <ul>
-        
-        <li class="prev">
-            <a href="/2019/06/10/正式入坑之Smali从入门到放弃/">
-                <i class="cube-icon cube-prev" aria-hidden="true"></i>
-                正式入坑之Smali从入门到放弃
-            </a>
-        </li>
-        
-        
-    </ul>
-</div>
-
-
-<!-- TODO 根据theme.comment的内容进行入口选择 -->
-
-
-
         </div>
         <div class="cube-right">
             
@@ -314,7 +299,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/逆向/">#逆向</a>
         </div>
         

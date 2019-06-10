@@ -146,6 +146,39 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-Android Studio+Smaliidea无源码调试APK">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2019/06/10/Android-Studio-Smaliidea无源码调试APK/">Android Studio+Smaliidea无源码调试APK</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2019-06-10
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/逆向/" class="cube-excerpt-tag-link">#逆向</a>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <p><strong>在逆向开发中，如果仅凭smali静态分析起来难度大，用时长，关键是不方便装X</strong></p>
+<h2 id="1-安装插件"><a href="#1-安装插件" class="headerlink" title="1.安装插件"></a>1.安装插件</h2><p><a href="https://bitbucket.org/JesusFreke/smali/downloads/" title="smali Idea插件" target="_blank" rel="noopener">smali Idea插件</a><br>下载插件之后在Android stuido中File-&gt;Settings-&gt;Plugins<br><img src="https://s2.ax1x.com/2019/06/10/V6AgA0.png" alt="此处输入图片的描述"></p>
+<h2 id="2-调试前准备"><a href="#2-调试前准备" class="headerlink" title="2.调试前准备"></a>2.调试前准备</h2><p>安装好插件之后重启Android stuido，在Android stuido中打开反编译的目录，将smali文件夹设置为source root<br><img src="https://s2.ax1x.com/2019/06/10/V6A7H1.png" alt="此处输入图片的描述"></p>
+<h2 id="3-配置调试选项"><a href="#3-配置调试选项" class="headerlink" title="3.配置调试选项"></a>3.配置调试选项</h2><p>打开DDMS查看要调试的进程，我这里准备调试com.whatsapp，通过DDMS可以看到com.whatsapp远程调试端口是8629<br><img src="https://s2.ax1x.com/2019/06/10/V6mUSK.png" alt="此处输入图片的描述"></p>
+<p>然后回到Android stuido中在Run/Debug Configurations 中新增一个remote调试，Prot设置为8629<br><img src="https://s2.ax1x.com/2019/06/10/V6meJ0.png" alt="此处输入图片的描述"></p>
+<p>Debug运行   这个时候在运行到断点的时候就会断下来，通过watcher观察寄存器的值</p>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2019/06/10/Android-Studio-Smaliidea无源码调试APK/">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-正式入坑之Smali从入门到放弃">
     <header class="cube-excerpt-header">
         <h1><a href="/2019/06/10/正式入坑之Smali从入门到放弃/">正式入坑之Smali从入门到放弃</a></h1>
@@ -156,6 +189,8 @@
             </div>
             <div class="cube-excerpt-tags">
                 <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/逆向/" class="cube-excerpt-tag-link">#逆向</a>
                 
             </div>
         </div>
@@ -220,6 +255,8 @@
             </div>
             <div class="cube-excerpt-tags">
                 <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+                <a href="/tags/逆向/" class="cube-excerpt-tag-link">#逆向</a>
                 
             </div>
         </div>
@@ -302,8 +339,8 @@
     
     
     <div class="count">
-        <a class="count articles"><span>2</span>Article</a>
-        <a class="count tags"><span>0</span>Tags</a>
+        <a class="count articles"><span>3</span>Article</a>
+        <a class="count tags"><span>1</span>Tags</a>
         <a class="count categories"><span>0</span>Categories</a>
     </div>
 </div>
@@ -341,7 +378,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2019/06/10/正式入坑之Smali从入门到放弃/" title="正式入坑之Smali从入门到放弃">正式入坑之Smali从入门到放弃</a>
+                    <a href="/2019/06/10/Android-Studio-Smaliidea无源码调试APK/" title="Android Studio+Smaliidea无源码调试APK">Android Studio+Smaliidea无源码调试APK</a>
                 </p>
             </div>
             
@@ -353,6 +390,19 @@
             <div class="normal">
                 <p class="index">
                     <span>2</span>
+                </p>
+                <p class="title">
+                    <a href="/2019/06/10/正式入坑之Smali从入门到放弃/" title="正式入坑之Smali从入门到放弃">正式入坑之Smali从入门到放弃</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>3</span>
                 </p>
                 <p class="title">
                     <a href="/2019/06/10/起航（ApkTool-使用）/" title="起航（ApkTool 使用）">起航（ApkTool 使用）</a>
@@ -367,6 +417,20 @@
 
 
 
+
+<div class="cube-tagcloud cube-sidebar" id="cube-tagcloud">
+    <div class="title">
+        <a href="/tags">Tagcloud</a>
+    </div>
+    <div class="cube-boxs">
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/逆向/">#逆向</a>
+        </div>
+        
+    </div>
+</div>
 
 
         </div>

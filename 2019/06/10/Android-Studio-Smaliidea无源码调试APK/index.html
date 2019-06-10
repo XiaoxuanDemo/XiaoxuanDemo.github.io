@@ -10,7 +10,7 @@
     
     
     
-    <title>起航（ApkTool 使用） | 成都小白</title>
+    <title>Android Studio+Smaliidea无源码调试APK | 成都小白</title>
     <!-- inject:style -->
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <!-- endinject -->
@@ -146,7 +146,7 @@
     <div class="cube-content">
         <div class="cube-left">
             <div class="cube-article">
-    <h1 class="title">起航（ApkTool 使用）</h1>
+    <h1 class="title">Android Studio+Smaliidea无源码调试APK</h1>
     
     <div class="cube-article-header">
         <div class="cube-article-date">
@@ -164,10 +164,12 @@
     
     <div class="cube-article-content cube-markdown">
         
-        <p><img src="https://s2.ax1x.com/2019/06/10/Vy8Mvt.gif" alt="Dragonwell Logo"></p>
-<h2 id="工欲善其事，必先利其器"><a href="#工欲善其事，必先利其器" class="headerlink" title="工欲善其事，必先利其器"></a>工欲善其事，必先利其器</h2><h3 id="1-下载ApkTool"><a href="#1-下载ApkTool" class="headerlink" title="1.下载ApkTool"></a>1.下载ApkTool</h3><p>官方下载地址：<a href="https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.4.0.jar" target="_blank" rel="noopener">https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.4.0.jar</a></p>
-<h3 id="2-反编译第一个APK"><a href="#2-反编译第一个APK" class="headerlink" title="2.反编译第一个APK"></a>2.反编译第一个APK</h3><p>反编译APK java -jar apktool.jar d target.apk<br><img src="https://s2.ax1x.com/2019/06/10/Vyc78I.png" alt="Image 2"><br>    执行完毕之后得到如下目录<br>    <strong>assests</strong>对应开发时的assests目录<br>    <strong>lib</strong>经过编译后只存放so文件<br>    <strong>original</strong>存放签名文件<br>    <strong>res</strong> XML资源文件<br>    <strong>smali</strong> 反编译字节码文件目录<br><img src="https://s2.ax1x.com/2019/06/10/VyguGR.png" alt="Image 3"></p>
-<h3 id="3-回编译APK"><a href="#3-回编译APK" class="headerlink" title="3.回编译APK"></a>3.回编译APK</h3><p>有些需求是在魔改之后生成一个新的APK，由于修改的是字节码文件 所以需要二次打包APK<br>这里使用apktool 二次打包java -jar apktool.jar b target<br><img src="https://s2.ax1x.com/2019/06/10/VyRY8A.png" alt="Image 4"><br>这个时候还是未签名的APK 要正常使用需要使用sign.jar重新签名，二次打包之后签名会改变，有些APK可能会需要做过签名验证才行。</p>
+        <p><strong>在逆向开发中，如果仅凭smali静态分析起来难度大，用时长，关键是不方便装X</strong></p>
+<h2 id="1-安装插件"><a href="#1-安装插件" class="headerlink" title="1.安装插件"></a>1.安装插件</h2><p><a href="https://bitbucket.org/JesusFreke/smali/downloads/" title="smali Idea插件" target="_blank" rel="noopener">smali Idea插件</a><br>下载插件之后在Android stuido中File-&gt;Settings-&gt;Plugins<br><img src="https://s2.ax1x.com/2019/06/10/V6AgA0.png" alt="此处输入图片的描述"></p>
+<h2 id="2-调试前准备"><a href="#2-调试前准备" class="headerlink" title="2.调试前准备"></a>2.调试前准备</h2><p>安装好插件之后重启Android stuido，在Android stuido中打开反编译的目录，将smali文件夹设置为source root<br><img src="https://s2.ax1x.com/2019/06/10/V6A7H1.png" alt="此处输入图片的描述"></p>
+<h2 id="3-配置调试选项"><a href="#3-配置调试选项" class="headerlink" title="3.配置调试选项"></a>3.配置调试选项</h2><p>打开DDMS查看要调试的进程，我这里准备调试com.whatsapp，通过DDMS可以看到com.whatsapp远程调试端口是8629<br><img src="https://s2.ax1x.com/2019/06/10/V6mUSK.png" alt="此处输入图片的描述"></p>
+<p>然后回到Android stuido中在Run/Debug Configurations 中新增一个remote调试，Prot设置为8629<br><img src="https://s2.ax1x.com/2019/06/10/V6meJ0.png" alt="此处输入图片的描述"></p>
+<p>Debug运行   这个时候在运行到断点的时候就会断下来，通过watcher观察寄存器的值</p>
 
     </div>
 </div>
@@ -175,13 +177,13 @@
 <div class="cube-article-nav">
     <ul>
         
-        <li class="prev">
+        
+        <li class="next">
             <a href="/2019/06/10/正式入坑之Smali从入门到放弃/">
-                <i class="cube-icon cube-prev" aria-hidden="true"></i>
                 正式入坑之Smali从入门到放弃
+                <i class="cube-icon cube-next" aria-hidden="true"></i>
             </a>
         </li>
-        
         
     </ul>
 </div>
@@ -314,7 +316,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/逆向/">#逆向</a>
         </div>
         
