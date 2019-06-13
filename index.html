@@ -146,6 +146,60 @@
     <div class="cube-content">
         <div class="cube-left">
             
+<div class="cube-excerpt" id="cube-excerpt-初见Xposed">
+    <header class="cube-excerpt-header">
+        <h1><a href="/2019/06/11/初见Xposed/">初见Xposed</a></h1>
+        <div class="cube-excerpt-header-msg">
+            <div class="cube-excerpt-date">
+                <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+                2019-06-11
+            </div>
+            <div class="cube-excerpt-tags">
+                <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+                
+            </div>
+        </div>
+    </header>
+    <article class="cube-excerpt-entry cube-markdown">
+        
+        
+           <h1 id="1-Xposed-是什么"><a href="#1-Xposed-是什么" class="headerlink" title="1.Xposed 是什么"></a>1.Xposed 是什么</h1><p>在说Xposed之前，就不得不说一下Hook技术，通俗来讲hook在代码A调用方法B之前添加一个中间者C，把原来执行逻辑从A到B变为从A到C再到B。这样 在B调用之前就会先执行到C，即可以实现修改B执行的参数，在B调用结束后结果会先返回到C，这个时候就可以在C中修改B的返回值使之变成我们想要的返回值。<br>Xposed就是一个Android平台下的hook框架，通过阅读源码可以发现Xposed框架在执行安装的时候会替换syste/bin下面的app_process等文件，app_processs是zygote进程文件，由于手机上所有的App进程都是由zygote fork出来的，所以Xpsoed通过替换zygote进程实现操作手机上所有App进程。Xposed通过将一个方法对象作为输入参数并且将这个方法注册为native,当调用那个被hook的方法时候，会调用XposedBridge中的handleHookedMethod这个方法来传递参数。handleHookedMethod这个方法类似于一个统一调度的接口，其对应的底层的C++函数是xposedCallHandler。而handleHookedMethod实现里面会根据一个全局结构hookedMethodCallbacks来选择相应的hook函数，并回调他们的beforeMethodHook, afterMethodHook函数。</p>
+<h1 id="2-Xposed-Installer"><a href="#2-Xposed-Installer" class="headerlink" title="2.Xposed Installer"></a>2.Xposed Installer</h1><p>官方下载<a href="https://dl-xda.xposed.info/modules/de.robv.android.xposed.installer_v32_de4f0d.apk" target="_blank" rel="noopener">Xposed Installer</a><br>在Xposed installer中执行安装操作，成功后重启设备之后打开XposedInstaller 可以看到Xposed框架已经激活了<br><img src="https://s2.ax1x.com/2019/06/11/VgrSUJ.png" alt="成功截图"></p>
+<h1 id="3-第一个Xposed模块"><a href="#3-第一个Xposed模块" class="headerlink" title="3.第一个Xposed模块"></a>3.第一个Xposed模块</h1><p>创建一个新的Android项目，在App的build.gradle中添加</p>
+<pre><code>//添加Xposed Framework包
+provided &apos;de.robv.android.xposed:api:82&apos;
+provided &apos;de.robv.android.xposed:api:82:sources&apos;</code></pre><p>创建MyModel类使之实现IXposedHookLoadPackage接口作为Xposed模块回调入口，在进程启动的时候框架会把应用的一些参数通过handleLoadPackage回调到模块中</p>
+<pre><code>public class MyModel implements IXposedHookLoadPackage {
+//hook的进程和包名
+String target=&quot;hnpro.model.xiaosa.xposedtarget&quot;;
+@Override
+public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+    if (lpparam.packageName.equals(target)&amp;&amp;lpparam.processName.equals(target)) {
+        XposedBridge.log(&quot;hook target success&quot;);
+
+        Class&lt;?&gt; mainActivitycls = lpparam.classLoader.loadClass(&quot;hnpro.model.xiaosa.xposedtarget.MainActivity&quot;);
+        //hook 的目标是hnpro.model.xiaosa.xposedtarget.MainActivity.showText(String args)这个方法
+        XposedHelpers.findAndHookMethod(mainActivitycls, &quot;showText&quot;, String.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                //修改在第一个参数后添加[XposedHook]
+                param.args[0]=param.args[0]+&quot;[XposedHook]&quot;;
+            }
+        });
+    }
+}
+}</code></pre><p>这个是Hook前<br><img src="https://s2.ax1x.com/2019/06/13/VhPeDe.png" alt="此处输入图片的描述"></p>
+<p>这个是hook后的<br><img src="https://s2.ax1x.com/2019/06/13/VhPTKO.png" alt="此处输入图片的描述"></p>
+<p> 可以看到已经成功修改了入参</p>
+
+        
+    </article>
+    <footer class="cube-excerpt-footer">
+        <a class="cube-excerpt-more" href="/2019/06/11/初见Xposed/">Read More</a>
+    </footer>
+</div>
+
 <div class="cube-excerpt" id="cube-excerpt-Android Studio+Smaliidea无源码调试APK">
     <header class="cube-excerpt-header">
         <h1><a href="/2019/06/10/Android-Studio-Smaliidea无源码调试APK/">Android Studio+Smaliidea无源码调试APK</a></h1>
@@ -339,7 +393,7 @@
     
     
     <div class="count">
-        <a class="count articles"><span>3</span>Article</a>
+        <a class="count articles"><span>4</span>Article</a>
         <a class="count tags"><span>1</span>Tags</a>
         <a class="count categories"><span>0</span>Categories</a>
     </div>
@@ -378,7 +432,7 @@
                     <span>1</span>
                 </p>
                 <p class="title">
-                    <a href="/2019/06/10/Android-Studio-Smaliidea无源码调试APK/" title="Android Studio+Smaliidea无源码调试APK">Android Studio+Smaliidea无源码调试APK</a>
+                    <a href="/2019/06/11/初见Xposed/" title="初见Xposed">初见Xposed</a>
                 </p>
             </div>
             
@@ -392,7 +446,7 @@
                     <span>2</span>
                 </p>
                 <p class="title">
-                    <a href="/2019/06/10/正式入坑之Smali从入门到放弃/" title="正式入坑之Smali从入门到放弃">正式入坑之Smali从入门到放弃</a>
+                    <a href="/2019/06/10/Android-Studio-Smaliidea无源码调试APK/" title="Android Studio+Smaliidea无源码调试APK">Android Studio+Smaliidea无源码调试APK</a>
                 </p>
             </div>
         </li>
@@ -403,6 +457,19 @@
             <div class="normal">
                 <p class="index">
                     <span>3</span>
+                </p>
+                <p class="title">
+                    <a href="/2019/06/10/正式入坑之Smali从入门到放弃/" title="正式入坑之Smali从入门到放弃">正式入坑之Smali从入门到放弃</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>4</span>
                 </p>
                 <p class="title">
                     <a href="/2019/06/10/起航（ApkTool-使用）/" title="起航（ApkTool 使用）">起航（ApkTool 使用）</a>
@@ -425,7 +492,7 @@
     <div class="cube-boxs">
         
         
-        <div class="cube-box-bg ">
+        <div class="cube-box ">
             <a href="/tags/逆向/">#逆向</a>
         </div>
         
