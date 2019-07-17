@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>WX js注入实现文章评论点赞 | 成都小白</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1.获取目标View由于使用的是VA来打开微信，如果使用adb shell dumpsys activity来获取栈顶Activity的话会获取到Stub这个代理Activity（具体参看VA四大组件的代理），所有这里使用另外一种方法，通过实现ActivityLifecycleCallbacks这个接口来监听当前进程的Activity的生命周期。在VA中子进程的Application对象是在bin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WX js注入实现文章评论点赞">
+<meta property="og:url" content="https://xiaoxuandemo.github.io/2019/07/16/WX-js注入实现文章评论点赞/index.html">
+<meta property="og:site_name" content="成都小白">
+<meta property="og:description" content="1.获取目标View由于使用的是VA来打开微信，如果使用adb shell dumpsys activity来获取栈顶Activity的话会获取到Stub这个代理Activity（具体参看VA四大组件的代理），所有这里使用另外一种方法，通过实现ActivityLifecycleCallbacks这个接口来监听当前进程的Activity的生命周期。在VA中子进程的Application对象是在bin">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://s2.ax1x.com/2019/07/17/ZL3sBT.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/07/17/ZLYOdf.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/07/17/ZLNw34.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/07/17/ZLaWXd.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/07/17/ZLdQ3D.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/07/17/ZLdIKJ.jpg">
+<meta property="og:updated_time" content="2019-07-17T08:50:30.490Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WX js注入实现文章评论点赞">
+<meta name="twitter:description" content="1.获取目标View由于使用的是VA来打开微信，如果使用adb shell dumpsys activity来获取栈顶Activity的话会获取到Stub这个代理Activity（具体参看VA四大组件的代理），所有这里使用另外一种方法，通过实现ActivityLifecycleCallbacks这个接口来监听当前进程的Activity的生命周期。在VA中子进程的Application对象是在bin">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/07/17/ZL3sBT.png">
+  
+    <link rel="alternate" href="/atom.xml" title="成都小白" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">成都小白</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://xiaoxuandemo.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-WX-js注入实现文章评论点赞" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/07/16/WX-js注入实现文章评论点赞/" class="article-date">
+  <time datetime="2019-07-16T01:57:01.000Z" itemprop="datePublished">2019-07-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      WX js注入实现文章评论点赞
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="1-获取目标View"><a href="#1-获取目标View" class="headerlink" title="1.获取目标View"></a>1.获取目标View</h2><p>由于使用的是VA来打开微信，如果使用adb shell dumpsys activity来获取栈顶Activity的话会获取到Stub这个代理Activity（具体参看VA四大组件的代理），所有这里使用另外一种方法，通过实现ActivityLifecycleCallbacks这个接口来监听当前进程的Activity的生命周期。<br>在VA中子进程的Application对象是在bindApplicationNoCheck方法中创建的</p>
+<pre><code>VirtualCore.get().getAppCallback().beforeStartApplication(packageName, processName, context);
+try {
+    mInitialApplication = LoadedApk.makeApplication.call(data.info, false, null);
+} catch (Throwable e) {
+    throw new RuntimeException(&quot;Unable to makeApplication&quot;, e);
+}</code></pre><p>这个时候我们通过Application对象调用registerActivityLifecycleCallbacks把我们实现的ActivityLifecycleCallbacks注册一下。<br>当我们打开公众号文章的时候可以发现，微信创建了一个新的进程：com.tencent.mm:toolsmp这个进程</p>
+<a id="more"></a>
+<p>找到当前栈顶的Activity<br><img src="https://s2.ax1x.com/2019/07/17/ZL3sBT.png" alt="此处输入图片的描述"><br>在smali中找到该Activity，发现这个Activity只有一个onWindowFocusChanged方法，那么去父类看看<br>追踪到父类com/tencent/mm/plugin/webview/ui/tools/WebViewUI<br>找到Lcom/tencent/mm/ui/widget/MMWebView;的父类Lcom/tencent/xweb/WebView;<br>这个就是微信公众号或者链接打开的时候使用的WebView，这个是微信自己写的一个WebView控件，API类似Android原生的WebView。</p>
+<h2 id="2-Dump网页内容"><a href="#2-Dump网页内容" class="headerlink" title="2.Dump网页内容"></a>2.Dump网页内容</h2><p>在浏览器打开一篇微信公众号文章和在微信里面打开是不一样的<br><a href="https://mp.weixin.qq.com/s?__biz=MzA5Nzk1MTQ5MA==&mid=2650596885&idx=1&sn=a5a9bd99a8bde59845c8c70633568a99&chksm=88914c78bfe6c56e14c8651d044c43e217b71d6347b8a4ea72d8e0c5516230440f0eaeae56b5&scene=4&subscene=126&ascene=0&devicetype=android-28&version=27000437&nettype=ctnet&abtest_cookie=BAABAAoACwASABMABAAjlx4AVpkeAM2ZHgD3mR4AAAA=&lang=zh_CN&pass_ticket=9VbgSUZsj5pBA0LFVwT5YWADKG4J4I54JCScqsNG73qKuktS%2b1f/NeKxRIP4zs93&wx_header=1" target="_blank" rel="noopener">测试文章</a><br><img src="https://s2.ax1x.com/2019/07/17/ZLYOdf.png" alt="此处输入图片的描述"><br>可以看到在浏览器中打开的文章是没有留言和阅读数和在看这些东西的。<br>同样一个链接得到不同的内容，所以我们可以猜想微信客户端应该是通过javascript改变了html内容，<br>在Android Api 19以后webview提供了一个evaluateJavascript方法执行js代码并且获取返回值，或者也可以通过loadData来执行JS 但是不能获取到返回值，<br>这个时候我们Hook一下Lcom/tencent/xweb/WebView;的evaluateJavascript方法可以看到这个WebView加载了很多的JS。<br><img src="https://s2.ax1x.com/2019/07/17/ZLNw34.png" alt="此处输入图片的描述"></p>
+<pre><code>(function(){
+        retrun document.getElementsByName(&quot;html&quot;)[0].innerHTML;
+    })()</code></pre><p>OK，那么我们也写一段JS去dump出html内容，这个时候我们在微信最后一个JS执行完成之后等待5秒再加载我们的JS。</p>
+<pre><code>XposedHelpers.callMethod(param.thisObject, &quot;evaluateJavascript&quot;,
+                                    &quot;(function(){\n&quot; +
+                                            &quot;\t\t\tretrun document.getElementsByName(\&quot;html\&quot;)[0].innerHTML;\n&quot; +
+                                            &quot;\t\t})()&quot;, new ValueCallback&lt;String&gt;() {
+                                @Override
+                                public void onReceiveValue(String value) {
+                                    XposedBridge.log(&quot;当前结果=&quot;+value);
+
+                                }
+                            });</code></pre><p>由于HTML挺大的，我们将HTML写到文件中 然后再pull出来。再把html中的\u003C替换成&lt;，去掉html中的转义符<br>之后可以看到，一个完整的Html展现在我们面前勒<br><img src="https://s2.ax1x.com/2019/07/17/ZLaWXd.png" alt="此处输入图片的描述"></p>
+<h2 id="3-编写点赞脚本"><a href="#3-编写点赞脚本" class="headerlink" title="3.编写点赞脚本"></a>3.编写点赞脚本</h2><p>有了Html我们就可以定位到评论列表<br><img src="https://s2.ax1x.com/2019/07/17/ZLdQ3D.png" alt="此处输入图片的描述"><br>有了评论列表 直接写一个js脚本来实现模拟点击并且返回点击的数量</p>
+<pre><code>(function() {
+var comments = document.getElementsByClassName(&quot;discuss_opr&quot;);
+var html = &quot;&quot;;
+var commentcount = comments.length;
+//赞的数量
+var clickComments = new Array();
+var clickcount = 0;
+if (commentcount &lt;= 3) {
+    clickcount = 1;
+}
+if (commentcount &gt; 3) {
+    clickcount = parseInt(Math.random() * 3 + 1, 10);
+}
+
+// 
+if (clickComments.length &lt; clickcount) {
+    for (var i = 0; i &lt; commentcount; i++) {
+        235
+        var rand = parseInt(Math.random() * 10 + 1, 10);
+        if (i &lt; 4) {
+            if (rand &lt;= 5) {
+                var point = clickComments.length;
+
+                if (point == 0) {
+                    clickComments[point] = i;
+                } else {
+                    if (clickComments.indexOf(i &lt; 0)) {
+                        clickComments[point] = i;
+                    }
+                }
+
+            }
+        } else if (i &gt;= 4 &amp;&amp; i &lt; 10) {
+            if (rand &lt;= 3) {
+                var point = clickComments.length;
+                if (point == 0) {
+                    clickComments[point] = i;
+                } else {
+                    if (clickComments.indexOf(i) &lt; 0) {
+                        clickComments[point] = i;
+                    }
+                }
+            }
+        } else {
+            if (rand &lt;= 2) {
+                var point = clickComments.length;
+                if (point == 0) {
+                    clickComments[point] = i;
+                } else {
+                    if (clickComments.indexOf(i) &lt; 0) {
+                        clickComments[point] = i;
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+for (var i = 0; i &lt; clickComments.length; i++) {
+    comments[clickComments[i]].getElementsByClassName(&quot;media_tool_meta&quot;)[0].click();
+}
+return &quot;click comment success&quot; + clickcount;
+})()</code></pre><p><img src="https://s2.ax1x.com/2019/07/17/ZLdIKJ.jpg" alt="此处输入图片的描述"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xiaoxuandemo.github.io/2019/07/16/WX-js注入实现文章评论点赞/" data-id="cjy70bk2g0001usvfycwoho1f" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/06/18/x红书过ROOT检测与设备指纹检测/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">x红书过ROOT检测与设备指纹检测</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/逆向/">逆向</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/逆向/" style="font-size: 10px;">逆向</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/07/16/WX-js注入实现文章评论点赞/">WX js注入实现文章评论点赞</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/18/x红书过ROOT检测与设备指纹检测/">x红书过ROOT检测与设备指纹检测</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/11/初见Xposed/">初见Xposed</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/10/Android-Studio-Smaliidea无源码调试APK/">Android Studio+Smaliidea无源码调试APK</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/10/正式入坑之Smali从入门到放弃/">正式入坑之Smali从入门到放弃</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 呆头鹅<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
